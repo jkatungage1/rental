@@ -4,9 +4,9 @@ name: Security - secrets
 # and because "Secret detection" is a required check.
 on:
   pull_request:
-    branches: [main]
+    branches: [main, base/00-starter]
   push:
-    branches: [main]
+    branches: [main, base/00-starter]
 
 permissions:
   contents: read
