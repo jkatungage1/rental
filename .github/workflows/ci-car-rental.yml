@@ -5,9 +5,9 @@ on:
   # otherwise a PR that only touches the other service would stay blocked
   # waiting for a check that never runs.
   pull_request:
-    branches: [main]
+    branches: [main, base/00-starter]
   push:
-    branches: [main]
+    branches: [main, base/00-starter]
     paths:
       - 'apps/car-rental-service/**'
       - '.github/workflows/ci-car-rental.yml'
