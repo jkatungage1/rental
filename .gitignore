@@ -27,3 +27,4 @@ __pycache__/
 venv/
 .coverage
 htmlcov/
+.ruff_cache/

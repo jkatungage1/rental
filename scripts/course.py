@@ -44,6 +44,29 @@ def test() -> None:
     test_python()
 
 
+def lint_java() -> None:
+    run([*gradle_command(), "checkstyleMain", "checkstyleTest"], cwd=CAR_SERVICE)
+
+
+def lint_python() -> None:
+    run([sys.executable, "-m", "ruff", "check", "app", "tests"], cwd=PRICING_SERVICE)
+    run(
+        [sys.executable, "-m", "ruff", "format", "--check", "app", "tests"],
+        cwd=PRICING_SERVICE,
+    )
+
+
+def lint() -> None:
+    lint_java()
+    lint_python()
+
+
+def verify() -> None:
+    """Reproduce the local quality gates: tests first, then static checks."""
+    test()
+    lint()
+
+
 def compose_up() -> None:
     require_command("docker")
     run(["docker", "compose", "up", "--build", "--detach"])
@@ -64,7 +87,7 @@ def wait_for(url: str, *, timeout_seconds: int = 45) -> None:
                 if 200 <= response.status < 300:
                     print(f"OK {url}")
                     return
-        except (URLError, TimeoutError) as error:
+        except (URLError, OSError) as error:
             last_error = error
         time.sleep(1)
 
@@ -121,6 +144,10 @@ def main() -> int:
             "test",
             "test-java",
             "test-python",
+            "lint",
+            "lint-java",
+            "lint-python",
+            "verify",
             "compose-up",
             "compose-down",
             "smoke",
@@ -133,6 +160,10 @@ def main() -> int:
         "test": test,
         "test-java": test_java,
         "test-python": test_python,
+        "lint": lint,
+        "lint-java": lint_java,
+        "lint-python": lint_python,
+        "verify": verify,
         "compose-up": compose_up,
         "compose-down": compose_down,
         "smoke": smoke,
